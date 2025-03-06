@@ -1,15 +1,14 @@
 {
   "name": "tieba-sign",
   "version": "1.0.0",
-  "description": "贴吧自动签到脚本",
+  "description": "百度贴吧自动签到脚本",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "packageManager": "pnpm@10.4.1",
   "devDependencies": {
     "@types/node": "^22.13.9"
