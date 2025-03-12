@@ -6,8 +6,11 @@
   "type": "module",
   "scripts": {
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["篡改猴", "百度贴吧", "签到", "tampermonkey"],
+  "author": {
+    "name": "Par9uet",
+    "email": "qq1607611087@gmail.com"
+  },
   "license": "MIT",
   "packageManager": "pnpm@10.4.1",
   "devDependencies": {
