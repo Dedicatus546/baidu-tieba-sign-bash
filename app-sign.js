@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         百度贴吧一键签到
+// @name         百度贴吧模拟 APP 一键签到
 // @version      2025-03-07
-// @description  百度贴吧一键签到
+// @description  百度贴吧模拟 APP 一键签到
 // @author       Par9uet
 // @match        https://tieba.baidu.com
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=tieba.baidu.com
@@ -10,6 +10,12 @@
 
 (function () {
   "use strict";
+
+  /**
+   * @description 请通过 f12 打开控制台面板手动将 BDUSS cookie 的值放到此处，由于 cookie 为 httponly，无法从代码中得到。
+   */
+  const bduss = "";
+
   /**
    * @description 手动延迟
    * @param {number} ms 透传给 setTimeout 的第二个参数
@@ -104,19 +110,29 @@
       const sp = new URLSearchParams();
       sp.append("ie", "utf-8");
       sp.append("kw", kw);
-      const json = await fetch("https://tieba-sign.prohibitorum.top/tieba_app_sign", {
-        method: "POST",
-        body: {
-          cookie: `ka=open;BAIDUID=${"test"}:FG=1`,
-          kw,
-          bduss: "",
-          tbs: PageData.tbs,
-        },
-      }).then((resp) => resp.json());
-      if (json.error_code === '160002') {
+      const cookie = document.cookie
+        .split(";")
+        .map((item) => item.trim().split("="));
+      const baiduId = cookie.find((item) => item[0] === "BAIDUID")[1];
+      const headers = new Headers();
+      headers.append("content-type", "application/json");
+      const json = await fetch(
+        "https://tieba-sign.prohibitorum.top/tieba_app_sign",
+        {
+          method: "POST",
+          headers,
+          body: JSON.stringify({
+            cookie: `ka=open;BAIDUID=${baiduId}`,
+            kw,
+            bduss,
+            tbs: PageData.tbs,
+          }),
+        }
+      ).then((resp) => resp.json());
+      if (json.error_code !== "0") {
         return json.data.errmsg;
       }
-      return "签到成功";
+      return json.forum[0].window_conf.text;
     };
 
     return {
