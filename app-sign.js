@@ -3,7 +3,7 @@
 // @version      2025-03-07
 // @description  百度贴吧模拟 APP 一键签到
 // @author       Par9uet
-// @match        https://tieba.baidu.com
+// @match        https://tieba.baidu.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=tieba.baidu.com
 // @grant        unsafeWindow
 // ==/UserScript==
