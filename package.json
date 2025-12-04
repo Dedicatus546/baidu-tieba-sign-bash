@@ -4,16 +4,20 @@
   "description": "百度贴吧自动签到脚本",
   "main": "index.js",
   "type": "module",
-  "scripts": {
-  },
-  "keywords": ["篡改猴", "百度贴吧", "签到", "tampermonkey"],
+  "scripts": {},
+  "keywords": [
+    "篡改猴",
+    "百度贴吧",
+    "签到",
+    "tampermonkey"
+  ],
   "author": {
     "name": "Par9uet",
     "email": "qq1607611087@gmail.com"
   },
   "license": "MIT",
-  "packageManager": "pnpm@10.4.1",
+  "packageManager": "pnpm@10.24.0",
   "devDependencies": {
-    "@types/node": "^22.13.9"
+    "@types/node": "^24.10.1"
   }
 }
