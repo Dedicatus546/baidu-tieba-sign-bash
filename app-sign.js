@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         百度贴吧模拟 APP 一键签到
-// @version      2025-03-07
+// @version      2025-12-05
 // @description  百度贴吧模拟 APP 一键签到
 // @author       Par9uet
 // @match        https://tieba.baidu.com/*
@@ -11,7 +11,7 @@
 (function () {
   "use strict";
 
-  // 默认新版 UI 
+  // 默认新版 UI
   const isNewPc = !document.cookie.includes("TIEBA_NEW_PC=0");
 
   /**
@@ -29,34 +29,35 @@
   /**
    * @description 拿到所有喜欢的吧的列表
    * @returns {Promise<Array<{
-   *   user_id: number;
-   *   forum_id: number;
-   *   forum_name: string;
-   *   is_like: number;
-   *   is_black: number;
-   *   like_num: number;
-   *   is_top: number;
-   *   in_time: number;
-   *   level_id: number;
-   *   level_name: string;
-   *   cur_score: string;
-   *   score_left: string;
-   *   sort_value: number;
-   *   is_sign: number;
+   *  forum_id: number;
+   *  forum_name: string;
+   *  user_level: number;
+   *  user_exp: number;
+   *  need_exp: number;
+   *  is_sign_in: number;
+   *  cont_sign_num: number;
+   *  avatar: string;
+   *  is_official_forum: number;
+   *  user_level_name: string;
    * }>>}
    */
   const getAllLike = async () => {
-    const resp = await fetch("/", {
-      method: "GET",
-    });
-    const html = await resp.text();
-    const matchRes = html.match(/like_forum:\s*(?<arrayStr>\[.*?\])/s);
-    if (!matchRes) {
-      return [];
+    const headers = new Headers();
+    headers.append("content-type", "application/json");
+    const json = await fetch(
+      "https://tieba-sign.prohibitorum.top/tieba_app_get_forum_list",
+      {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          bduss,
+        }),
+      }
+    ).then((resp) => resp.json());
+    if (json.error && json.error.errno !== 0) {
+      return json.error.errmsg;
     }
-    const { arrayStr } = matchRes.groups;
-    const array = JSON.parse(arrayStr);
-    return array;
+    return json.forum_info;
   };
 
   /**
@@ -64,13 +65,6 @@
    * @param {string} kw 吧名
    */
   const sign = async (kw) => {
-    const sp = new URLSearchParams();
-    sp.append("ie", "utf-8");
-    sp.append("kw", kw);
-    const cookie = document.cookie
-      .split(";")
-      .map((item) => item.trim().split("="));
-    const baiduId = cookie.find((item) => item[0] === "BAIDUID")[1];
     const headers = new Headers();
     headers.append("content-type", "application/json");
     const json = await fetch(
@@ -79,10 +73,8 @@
         method: "POST",
         headers,
         body: JSON.stringify({
-          cookie: `ka=open;BAIDUID=${baiduId}`,
           kw,
           bduss,
-          tbs: PageData.tbs,
         }),
       }
     ).then((resp) => resp.json());
