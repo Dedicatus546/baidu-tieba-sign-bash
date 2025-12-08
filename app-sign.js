@@ -63,8 +63,9 @@
   /**
    * @description 根据吧名签到
    * @param {string} kw 吧名
+   * @param {string} tbs
    */
-  const sign = async (kw) => {
+  const sign = async (kw, tbs) => {
     const headers = new Headers();
     headers.append("content-type", "application/json");
     const json = await fetch(
@@ -75,6 +76,7 @@
         body: JSON.stringify({
           kw,
           bduss,
+          tbs,
         }),
       }
     ).then((resp) => resp.json());
@@ -86,6 +88,12 @@
 
   class BaseUI {
     mount() {}
+    /**
+     * @returns {string}
+     */
+    getTbs() {
+      throw new Error("需要子类实现");
+    }
     createButton(tagName = "button") {
       const button = document.createElement(tagName);
       button.innerText = "一键 APP 签到";
@@ -93,9 +101,9 @@
         const allLike = await getAllLike();
         button.disabled = true;
         for (const item of allLike) {
-          if (item.is_sign === 0) {
+          if (item.is_sign_in === 0) {
             button.innerText = `正在签到 ${item.forum_name}`;
-            const message = await sign(item.forum_name);
+            const message = await sign(item.forum_name, this.getTbs());
             button.innerText = message;
             await delay(200);
           } else {
@@ -113,6 +121,9 @@
   }
 
   class OldUI extends BaseUI {
+    getTbs() {
+      return window.PageData.tbs;
+    }
     setStyle() {
       const style = document.createElement("style");
       style.innerText = `
@@ -150,6 +161,11 @@
   }
 
   class NewUI extends BaseUI {
+    getTbs() {
+      const tiebaStorage = localStorage.getItem("tiabaPcLocalStorage");
+      const obj = JSON.parse(tiebaStorage);
+      return obj.tbs;
+    }
     setStyle() {
       const style = document.createElement("style");
       style.innerText = `
